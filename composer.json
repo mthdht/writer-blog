@@ -1,0 +1,17 @@
+{
+    "name": "mthdht/blog",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "mthdht",
+            "email": "mthdht@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "vendor/Framework"
+        }
+    }
+}
