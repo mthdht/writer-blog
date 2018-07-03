@@ -25,10 +25,30 @@ class Route
         $path = preg_replace('#\{([\w]+)\}#', '([^/]+)', $this->path);
         // check if regex match the url
         if (preg_match('#^'.$path.'$#', $url, $matches)) {
+            array_shift($matches);
             $this->matches = $matches;
-            var_dump($this->matches);
             return true;
         }
         return false;
+    }
+
+    public function handle()
+    {
+        // check if handler is a string
+        if (is_string($this->handler)) {
+            // check if the string match the 'XXXController@method' pattern
+            if (preg_match('#[A-Za-z]+Controller@[a-z]+#', $this->handler)) {
+                // call good controller and his associate method
+                $handlerParameter = explode('@', $this->handler);
+                $controller = 'App\\Controllers\\' . $handlerParameter[0];
+                $controller = new $controller();
+                $method = $handlerParameter[1];
+                return call_user_func_array([$controller, $method], $this->matches);
+            } else {
+                throw new \Exception('Controller handler not valid');
+            }
+        } else {
+            return call_user_func_array($this->handler, $this->matches);
+        }
     }
 }

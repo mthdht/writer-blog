@@ -34,7 +34,7 @@ class Router
 
         foreach (self::$routes[$_SERVER['REQUEST_METHOD']] as $route) {
             if ($route->match($_SERVER['REQUEST_URI'])) {
-                $route->handle();
+                return $route->handle();
             }
         }
 
