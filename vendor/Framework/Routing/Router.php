@@ -15,17 +15,30 @@ class Router
     public static function get($path, $handler)
     {
         $route = new Route($path, $handler);
-        self::$routes['get'][] = $route;
+        self::$routes['GET'][] = $route;
+        return $route;
     }
 
     public static function post($path, $handler)
     {
         $route = new Route($path, $handler);
-        self::$routes['post'][] = $route;
+        self::$routes['POST'][] = $route;
+        return $route;
     }
 
     public static function run()
     {
+        if (!isset(self::$routes[$_SERVER['REQUEST_METHOD']])) {
+            throw new \Exception('Request method not found!');
+        }
+
+        foreach (self::$routes[$_SERVER['REQUEST_METHOD']] as $route) {
+            if ($route->match($_SERVER['REQUEST_URI'])) {
+                $route->handle();
+            }
+        }
+
+        throw new \Exception('No Route Matches this URL');
 
     }
 
