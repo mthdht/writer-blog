@@ -10,8 +10,8 @@ namespace App\Controllers;
 class TestController
 {
 
-    public function show($id)
+    public function show($id, $id2)
     {
-        echo 'je suis le test ' . $id;
+        return 'je suis le test ' . $id . ', ' . $id2;
     }
 }
