@@ -16,6 +16,7 @@ class QueryBuilder
     private $orderBy;
     private $limit;
     private $offset;
+    private $action;
 
 
     private function table($table)
@@ -27,9 +28,15 @@ class QueryBuilder
     public function select()
     {
         $this->fields = func_get_args();
+        $this->action = strtoupper(__FUNCTION__);
         return $this;
     }
 
+    public function where()
+    {
+        $this->whereClauses[] = func_get_args();
+        return $this;
+    }
 
     public static function __callStatic($name, $arguments)
     {
