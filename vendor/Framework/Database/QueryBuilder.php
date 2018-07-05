@@ -62,10 +62,41 @@ class QueryBuilder
         return $this;
     }
 
+    public function get()
+    {
+        switch ($this->action) {
+            case 'SELECT':
+                $this->query .= 'SELECT '
+                    . implode(', ', $this->fields)
+                    . ' FROM ' . $this->table;
+
+                // where clause ?
+                if (isset($this->where)) {
+                    $where = implode(' AND ', array_map(function ($element) {
+                        return implode(' ', $element);
+                    }, $this->where));
+                    $this->query .= ' WHERE ' . $where;
+                }
+
+                // order by
+                $this->query .= ' ORDER BY ' . implode(', ', $this->orderBy);
+
+                // limit ?
+                if (isset($this->limit)) {
+                    $this->query .= ' LIMIT ' . $this->offset . ' ' . $this->limit[0];
+                }
+
+                break;
+
+
+        }
+        return $this;
+    }
+
     public static function __callStatic($name, $arguments)
     {
 
-        $queryBuilder = new QueryBuilder(new Database('blog', 'root', 'Mth12Dht89', 'localhost'));
+        $queryBuilder = new QueryBuilder(new Database('blog', 'root', 'root', 'localhost'));
         return call_user_func_array([$queryBuilder, $name], $arguments);
 
     }
