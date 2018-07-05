@@ -13,7 +13,7 @@ class QueryBuilder
     private $table;
     private $fields;
     private $values;
-    private $attribute;
+    private $attributes;
     private $where;
     private $orderBy = ['id'];
     private $limit;
@@ -44,13 +44,14 @@ class QueryBuilder
     public function insert()
     {
         $this->action = strtoupper(__FUNCTION__);
-        foreach (func_get_args() as $key => $value) {
-            $this->fields = implode(', ', array_keys($value));
-            $value = array_map(function ($elem) {
-                return '\'' . $elem . '\'';
-            }, $value);
-            $this->values[] = implode(', ', $value);
+        $arg = func_get_args()[0];
+        $this->fields = array_keys($arg);
+
+        foreach ($arg as $keyItem => $item) {
+            $this->attributes[$keyItem] = $item;
+            $this->values[] = ':' . $keyItem;
         }
+        $this->values = implode(', ', $this->values);
 
         return $this;
     }
@@ -59,7 +60,7 @@ class QueryBuilder
     {
         $tab = func_get_args();
         $this->where[] = [$tab[0], $tab[1], ':' . $tab[0]];
-        $this->attribute[$tab[0]] = $tab[2];
+        $this->attributes[$tab[0]] = $tab[2];
         return $this;
     }
 
@@ -104,14 +105,11 @@ class QueryBuilder
 
     private function getInsertQuery()
     {
-        $this->query = "INSERT INTO " . $this->table . "(" . $this->fields . ") VALUES";
-        foreach ($this->values as $key => $value) {
-            $this->query .= "(" . $value . ")";
-            $this->query .= next($this->values) == true ? ", " : null;
-        }
+        $this->query = "INSERT INTO " . $this->table . "(" . implode(', ', $this->fields) . ") VALUES";
+        $this->query .= "(" . $this->values . ")";
     }
 
-    public function getQuery()
+    private function getQuery()
     {
         switch ($this->action) {
             case "SELECT":
@@ -127,7 +125,7 @@ class QueryBuilder
     public function get()
     {
         $query = $this->getQuery();
-        return $this->db->prepare($query, $this->attribute);
+        return $this->db->prepare($query, $this->attributes);
     }
 
     public static function __callStatic($name, $arguments)
