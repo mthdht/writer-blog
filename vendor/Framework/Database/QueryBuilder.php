@@ -13,7 +13,7 @@ class QueryBuilder
     private $table;
     private $fields;
     private $values;
-    private $insertion;
+    private $attribute;
     private $where;
     private $orderBy = ['id'];
     private $limit;
@@ -57,7 +57,9 @@ class QueryBuilder
 
     public function where()
     {
-        $this->where[] = func_get_args();
+        $tab = func_get_args();
+        $this->where[] = [$tab[0], $tab[1], ':' . $tab[0]];
+        $this->attribute[$tab[0]] = $tab[2];
         return $this;
     }
 
@@ -102,7 +104,7 @@ class QueryBuilder
 
     private function getInsertQuery()
     {
-        $this->query = "INSERT INTO (" . $this->fields . ") VALUES";
+        $this->query = "INSERT INTO " . $this->table . "(" . $this->fields . ") VALUES";
         foreach ($this->values as $key => $value) {
             $this->query .= "(" . $value . ")";
             $this->query .= next($this->values) == true ? ", " : null;
@@ -125,7 +127,7 @@ class QueryBuilder
     public function get()
     {
         $query = $this->getQuery();
-        var_dump($query);
+        return $this->db->prepare($query, $this->attribute);
     }
 
     public static function __callStatic($name, $arguments)
