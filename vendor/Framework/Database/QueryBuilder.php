@@ -12,6 +12,8 @@ class QueryBuilder
 
     private $table;
     private $fields;
+    private $values;
+    private $insertion;
     private $where;
     private $orderBy = ['id'];
     private $limit;
@@ -36,6 +38,17 @@ class QueryBuilder
     {
         $this->fields = func_get_args();
         $this->action = strtoupper(__FUNCTION__);
+        return $this;
+    }
+
+    public function insert()
+    {
+        $this->action = strtoupper(__FUNCTION__);
+        foreach (func_get_args() as $key => $value) {
+            $this->fields = implode(', ', array_keys($value));
+            $this->values[] = implode(', ', $value);
+        }
+
         return $this;
     }
 
@@ -66,7 +79,7 @@ class QueryBuilder
     {
         switch ($this->action) {
             case 'SELECT':
-                $this->query .= 'SELECT '
+                $this->query = 'SELECT '
                     . implode(', ', $this->fields)
                     . ' FROM ' . $this->table;
 
@@ -87,8 +100,16 @@ class QueryBuilder
                 }
 
                 break;
+            case 'INSERT':
+                $this->query = 'INSERT INTO ('
+                . $this->fields
+                . ') VALUES';
+                foreach ($this->values as $key => $value) {
+                    $this->query .= '(' . $value . ')';
+                    $this->query .= next($this->values) == true ? ', ' : null;
+                }
 
-
+                break;
         }
         return $this;
     }
