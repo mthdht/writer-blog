@@ -24,6 +24,12 @@ class QueryBuilder
         return $this;
     }
 
+    public function select()
+    {
+        $this->fields = func_get_args();
+        return $this;
+    }
+
 
     public static function __callStatic($name, $arguments)
     {
