@@ -12,11 +12,18 @@ class QueryBuilder
 
     private $table;
     private $fields;
-    private $whereClauses;
-    private $orderBy;
+    private $where;
+    private $orderBy = ['id'];
     private $limit;
-    private $offset;
+    private $offset = 0;
     private $action;
+    private $db;
+    private $query;
+
+    private function __construct(Database $db)
+    {
+        $this->db = $db;
+    }
 
 
     private function table($table)
@@ -34,14 +41,19 @@ class QueryBuilder
 
     public function where()
     {
-        $this->whereClauses[] = func_get_args();
+        $this->where[] = func_get_args();
+        return $this;
+    }
+
+    public function orderBy() {
+        $this->orderBy = func_get_args();
         return $this;
     }
 
     public static function __callStatic($name, $arguments)
     {
 
-        $queryBuilder = new QueryBuilder();
+        $queryBuilder = new QueryBuilder(new Database('blog', 'root', 'Mth12Dht89', 'localhost'));
         return call_user_func_array([$queryBuilder, $name], $arguments);
 
     }
