@@ -50,6 +50,18 @@ class QueryBuilder
         return $this;
     }
 
+    public function take()
+    {
+        $this->limit = func_get_args();
+        return $this;
+    }
+
+    public function offset()
+    {
+        $this->offset = func_get_args();
+        return $this;
+    }
+
     public static function __callStatic($name, $arguments)
     {
 
