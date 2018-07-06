@@ -67,6 +67,10 @@ class QueryBuilder
      */
     private $action;
 
+    /**
+     * All the pamareters for table join
+     * @var array
+     */
     private $joinParam;
 
     /**
@@ -206,27 +210,44 @@ class QueryBuilder
         return $this;
     }
 
-    private function joins()
+    /**
+     * Stock join parameter for the query
+     * @param array
+     * @return $this
+     */
+    private function joins($args)
     {
-        $args = func_get_args()[0];
         $this->joinParam['table'] = $args[0];
         array_shift($args);
         $this->joinParam['condition'] = $args;
         return $this;
     }
 
+
+    /**
+     * Stock the join method (INNER JOIN) and call generic joins method
+     * @return QueryBuilder
+     */
     public function join()
     {
         $this->joinParam['join_method'] = 'INNER JOIN';
         return $this->joins(func_get_args());
     }
 
+    /**
+     * Stock the join method (LEFT JOIN) and call generic joins method
+     * @return QueryBuilder
+     */
     public function leftJoin()
     {
         $this->joinParam['join_method'] = 'LEFT JOIN';
         return $this->joins(func_get_args());
     }
 
+    /**
+     * Stock the join method (RIGHT JOIN) and call generic joins method
+     * @return QueryBuilder
+     */
     public function rightJoin()
     {
         $this->joinParam['join_method'] = 'RIGHT JOIN';
