@@ -151,6 +151,15 @@ class QueryBuilder
     }
 
     /**
+     * Stock the action
+     * @return $this
+     */
+    public function delete() {
+        $this->action = strtoupper(__FUNCTION__);
+        return $this;
+    }
+
+    /**
      * Stock the where clause
      * @params string the condition for where
      * @return $this
@@ -250,6 +259,22 @@ class QueryBuilder
     }
 
     /**
+     * Create the query string for delete statement
+     */
+    private function getDeleteQuery()
+    {
+        $this->query = "DELETE FROM " . $this->table;
+
+        // wher clause ?
+        if (isset($this->where)) {
+            $where = implode(" AND ", array_map(function ($element) {
+                return implode(" ", $element);
+            }, $this->where));
+            $this->query .= " WHERE " . $where;
+        }
+    }
+
+    /**
      * @return mixed
      */
     public function getQuery()
@@ -263,6 +288,9 @@ class QueryBuilder
                 break;
             case "UPDATE":
                 $this->getUpdateQuery();
+                break;
+            case 'DELETE':
+                $this->getDeleteQuery();
                 break;
         }
         return $this->query;
