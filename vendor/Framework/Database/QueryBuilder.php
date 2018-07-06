@@ -46,7 +46,7 @@ class QueryBuilder
      * The field that the select query results should be order by
      * @var string
      */
-    private $orderBy = 'id';
+    private $orderBy;
 
     /**
      * The number of result that we want
@@ -66,6 +66,8 @@ class QueryBuilder
      * @var string
      */
     private $action;
+
+    private $joinParam;
 
     /**
      * The database instance for all queries
@@ -204,6 +206,21 @@ class QueryBuilder
         return $this;
     }
 
+    public function joins()
+    {
+        $args = func_get_args()[0];
+        $this->joinParam['table'] = $args[0];
+        array_shift($args);
+        $this->joinParam['condition'] = $args;
+        return $this;
+    }
+
+    public function join()
+    {
+        $this->joinParam['join_method'] = 'INNER JOIN';
+        return $this->joins(func_get_args());
+    }
+
     /**
      * Create the query string for select statement
      */
@@ -211,6 +228,14 @@ class QueryBuilder
         $this->query = "SELECT "
             . implode(", ", $this->fields)
             . " FROM " . $this->table;
+
+        //join ?
+        if (isset($this->joinParam)) {
+            $this->query .= ' ' . $this->joinParam['join_method']
+            . ' ' . $this->joinParam['table']
+            .' ON ' . implode(' ', $this->joinParam['condition']);
+
+        }
 
         // where clause ?
         if (isset($this->where)) {
@@ -221,7 +246,7 @@ class QueryBuilder
         }
 
         // order by
-        $this->query .= " ORDER BY " . $this->orderBy;
+        $this->query .= isset($this->orderBy) ? " ORDER BY " . $this->orderBy : null;
 
         // limit ?
         if (isset($this->limit)) {
