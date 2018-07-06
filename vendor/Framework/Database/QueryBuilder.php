@@ -46,12 +46,25 @@ class QueryBuilder
         $this->action = strtoupper(__FUNCTION__);
         $arg = func_get_args()[0];
         $this->fields = array_keys($arg);
+        $this->attributes = $arg;
 
-        foreach ($arg as $keyItem => $item) {
-            $this->attributes[$keyItem] = $item;
-            $this->values[] = ':' . $keyItem;
+        foreach ($arg as $key => $value) {
+            $this->values[] = ':' . $key;
         }
-        $this->values = implode(', ', $this->values);
+
+        return $this->get();
+    }
+
+    public function update()
+    {
+        $arg = func_get_args()[0];
+        $this->action = strtoupper(__FUNCTION__);
+        $this->fields = array_keys($arg);
+        $this->attributes = $arg;
+
+        foreach ($arg as $key => $value) {
+            $this->values[] = ':' . $key;
+        }
 
         return $this;
     }
@@ -106,7 +119,24 @@ class QueryBuilder
     private function getInsertQuery()
     {
         $this->query = "INSERT INTO " . $this->table . "(" . implode(', ', $this->fields) . ") VALUES";
-        $this->query .= "(" . $this->values . ")";
+        $this->query .= "(" . implode (', ', $this->values) . ")";
+    }
+
+    private function getUpdateQuery()
+    {
+        $this->query = "UPDATE " . $this->table . ' SET ';
+        foreach ($this->fields as $key => $value) {
+            $this->query .= $value . ' = ' . $this->values[$key];
+            $this->query .= next($this->fields) != false ? ', ': null;
+        }
+
+        // wher clause ?
+        if (isset($this->where)) {
+            $where = implode(" AND ", array_map(function ($element) {
+                return implode(" ", $element);
+            }, $this->where));
+            $this->query .= " WHERE " . $where;
+        }
     }
 
     public function getQuery()
@@ -118,11 +148,14 @@ class QueryBuilder
             case "INSERT":
                 $this->getInsertQuery();
                 break;
+            case "UPDATE":
+                $this->getUpdateQuery();
+                break;
         }
         return $this->query;
     }
 
-    public function get()
+    public function send()
     {
         $query = $this->getQuery();
         return $this->db->prepare($query, $this->attributes);
