@@ -206,7 +206,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function joins()
+    private function joins()
     {
         $args = func_get_args()[0];
         $this->joinParam['table'] = $args[0];
@@ -218,6 +218,18 @@ class QueryBuilder
     public function join()
     {
         $this->joinParam['join_method'] = 'INNER JOIN';
+        return $this->joins(func_get_args());
+    }
+
+    public function leftJoin()
+    {
+        $this->joinParam['join_method'] = 'LEFT JOIN';
+        return $this->joins(func_get_args());
+    }
+
+    public function rightJoin()
+    {
+        $this->joinParam['join_method'] = 'RIGHT JOIN';
         return $this->joins(func_get_args());
     }
 
