@@ -17,7 +17,7 @@ class QueryBuilder
     private $where;
     private $orderBy = ['id'];
     private $limit;
-    private $offset = 0;
+    private $offset = [0];
     private $action;
     private $db;
     private $query;
@@ -109,7 +109,7 @@ class QueryBuilder
         $this->query .= "(" . $this->values . ")";
     }
 
-    private function getQuery()
+    public function getQuery()
     {
         switch ($this->action) {
             case "SELECT":
