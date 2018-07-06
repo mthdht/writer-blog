@@ -10,30 +10,101 @@ namespace Framework\Database;
 class QueryBuilder
 {
 
+    /**
+     * The table in which the query will happen
+     * @var string
+     */
     private $table;
+
+    /**
+     * The fields that we want to change/insert/get
+     * @var array
+     */
     private $fields;
+
+    /**
+     * The pseudo values we want to bind to attributes in database prepare statement
+     * e.g : [ ':id', ':title', ':field' ... ]
+     * @var array
+     */
     private $values;
+
+    /**
+     * The attributes we want to bind to pseudo values
+     * @var array
+     */
     private $attributes;
+
+    /**
+     * The where clause for the query with pseudo value
+     * e.g : [ 'id', '=', ':id' ]
+     * @var array
+     */
     private $where;
-    private $orderBy = ['id'];
+
+    /**
+     * The field that the select query results should be order by
+     * @var string
+     */
+    private $orderBy = 'id';
+
+    /**
+     * The number of result that we want
+     * @var int
+     */
     private $limit;
-    private $offset = [0];
+
+    /**
+     * the index that the select query should start
+     * @var int
+     */
+    private $offset = 0;
+
+    /**
+     * The type of query
+     * e.g : 'INSERT' | 'SELECT' | 'UPDATE' | 'DELETE'
+     * @var string
+     */
     private $action;
+
+    /**
+     * The database instance for all queries
+     * @var Framework\Database\Database
+     */
     private $db;
+
+    /**
+     * The statement for the database prepare method
+     * @var string
+     */
     private $query;
 
+    /**
+     * QueryBuilder constructor.
+     * @param Database $db
+     */
     private function __construct(Database $db)
     {
         $this->db = $db;
     }
 
 
+    /**
+     * Stock the name of table
+     * @param $table
+     * @return $this
+     */
     private function table($table)
     {
         $this->table = $table;
         return $this;
     }
 
+    /**
+     * Stock the action, and fields attribute
+     * @params string The fields to stock
+     * @return $this
+     */
     public function select()
     {
         $this->fields = func_get_args();
@@ -41,6 +112,11 @@ class QueryBuilder
         return $this;
     }
 
+    /**
+     * Stock the action, fields and attributes
+     * @param array the column/value to store in database
+     * @return mixed
+     */
     public function insert()
     {
         $this->action = strtoupper(__FUNCTION__);
@@ -52,9 +128,14 @@ class QueryBuilder
             $this->values[] = ':' . $key;
         }
 
-        return $this->get();
+        return $this;
     }
 
+    /**
+     * Stock the action, fields and attribute
+     * @param array the column/value to update in database
+     * @return $this
+     */
     public function update()
     {
         $arg = func_get_args()[0];
@@ -69,6 +150,11 @@ class QueryBuilder
         return $this;
     }
 
+    /**
+     * Stock the where clause
+     * @params string the condition for where
+     * @return $this
+     */
     public function where()
     {
         $tab = func_get_args();
@@ -77,23 +163,41 @@ class QueryBuilder
         return $this;
     }
 
-    public function orderBy() {
-        $this->orderBy = func_get_args();
+    /**
+     * Stock the orderBy
+     * @param string
+     * @return $this
+     */
+    public function orderBy($value) {
+        $this->orderBy = $value;
         return $this;
     }
 
-    public function take()
+    /**
+     * Stock the limit
+     * @param int
+     * @return $this
+     */
+    public function take($value)
     {
-        $this->limit = func_get_args();
+        $this->limit = $value;
         return $this;
     }
 
-    public function offset()
+    /**
+     * Stock the offset
+     * @param int
+     * @return $this
+     */
+    public function offset($value)
     {
-        $this->offset = func_get_args();
+        $this->offset = $value;
         return $this;
     }
 
+    /**
+     * Create the query string for select statement
+     */
     private function getSelectQuery() {
         $this->query = "SELECT "
             . implode(", ", $this->fields)
@@ -108,20 +212,26 @@ class QueryBuilder
         }
 
         // order by
-        $this->query .= " ORDER BY " . implode(", ", $this->orderBy);
+        $this->query .= " ORDER BY " . $this->orderBy;
 
         // limit ?
         if (isset($this->limit)) {
-            $this->query .= " LIMIT " . $this->offset[0] . ", " . $this->limit[0];
+            $this->query .= " LIMIT " . $this->offset . ", " . $this->limit;
         }
     }
 
+    /**
+     *  Create the query string for insert statement
+     */
     private function getInsertQuery()
     {
         $this->query = "INSERT INTO " . $this->table . "(" . implode(', ', $this->fields) . ") VALUES";
         $this->query .= "(" . implode (', ', $this->values) . ")";
     }
 
+    /**
+     * Create the query string for update statement
+     */
     private function getUpdateQuery()
     {
         $this->query = "UPDATE " . $this->table . ' SET ';
@@ -139,6 +249,9 @@ class QueryBuilder
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function getQuery()
     {
         switch ($this->action) {
@@ -155,6 +268,10 @@ class QueryBuilder
         return $this->query;
     }
 
+    /**
+     * Execute the query to database
+     * @return array|bool|\PDOStatement
+     */
     public function send()
     {
         $query = $this->getQuery();
