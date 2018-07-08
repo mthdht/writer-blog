@@ -6,11 +6,9 @@
 
 namespace Framework\Database;
 
-
-
 class Entity
 {
-    use Framework\Database\Hydrator;
+    use Hydrator;
 
     protected $id;
 
@@ -22,7 +20,7 @@ class Entity
 
     public function getAttribute($key)
     {
-        if (!$key) {
+        if (!isset($this->$key)) {
             return;
         }
         return $this->$key;
