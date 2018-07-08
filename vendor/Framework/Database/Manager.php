@@ -21,7 +21,6 @@ class Manager
         $tableName = str_replace('Manager', '', $tableName);
         $this->table = strtolower($tableName);
         $this->builder = QueryBuilder::table($this->table);
-
     }
 
     protected function where()
@@ -49,9 +48,9 @@ class Manager
         return $this->builder->delete()->where('id', '=', $id)->send();
     }
 
-    public static function create($data)
+    protected function create($data)
     {
-
+        return $this->builder->insert($data)->send();
     }
 
     public static function __callStatic($name, $arguments)
