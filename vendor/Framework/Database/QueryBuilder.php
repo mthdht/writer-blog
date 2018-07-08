@@ -361,7 +361,9 @@ class QueryBuilder
     public function send()
     {
         $query = $this->getQuery();
-        $classname = 'App\\Models\\' . ucfirst(substr($this->table, 0, -1));
+        $table = $this->table;
+        $table = preg_replace('#ies#', 'y', $table);
+        $classname = 'App\\Models\\' . ucfirst($table);
         return $this->db->prepare($query, $this->attributes, $classname);
     }
 
