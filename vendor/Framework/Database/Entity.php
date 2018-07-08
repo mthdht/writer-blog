@@ -28,13 +28,23 @@ class Entity
         return $this->$key;
     }
 
+    public function setAttribute($name, $value)
+    {
+        $method = 'set' . ucfirst($name);
+        if (method_exists($this, $method)) {
+            $this->$method($value);
+        } else {
+            $this->$name = $value;
+        }
+    }
+
     public function __get($name)
     {
-        // TODO: Implement __get() method.
+        return $this->getAttribute($name);
     }
 
     public function __set($name, $value)
     {
-        // TODO: Implement __set() method.
+        $this->setAttribute($name, $value);
     }
 }
