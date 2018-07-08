@@ -44,9 +44,9 @@ class Manager
         return $this->builder->update($data);
     }
 
-    public static function delete($id)
+    protected function delete($id)
     {
-
+        return $this->builder->delete()->where('id', '=', $id);
     }
 
     public static function create($data)
