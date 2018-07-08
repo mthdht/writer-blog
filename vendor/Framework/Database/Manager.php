@@ -36,7 +36,7 @@ class Manager
 
     protected function find($id)
     {
-        return $this->builder->select('*')->where('id', '=', $id);
+        return $this->builder->select('*')->where('id', '=', $id)->send();
     }
 
     protected function update($data)
@@ -46,7 +46,7 @@ class Manager
 
     protected function delete($id)
     {
-        return $this->builder->delete()->where('id', '=', $id);
+        return $this->builder->delete()->where('id', '=', $id)->send();
     }
 
     public static function create($data)
