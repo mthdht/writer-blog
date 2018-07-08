@@ -57,7 +57,7 @@ class Database
         if (is_null($classname)) {
             $request->setFetchMode(\PDO::FETCH_OBJ);
         } else {
-            $request->setFetchMode(\PDO::FETCH_CLASS, $classname);
+            $request->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, $classname);
         }
         $data = $request->fetchAll();
         return $data;
