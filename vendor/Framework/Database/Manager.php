@@ -24,19 +24,24 @@ class Manager
 
     }
 
+    protected function where()
+    {
+        return $this->builder->select('*')->where(...func_get_args());
+    }
+
     protected function all($column = ['*'])
     {
-        return $this->builder->select(implode(', ', $column))->send();
+        return $this->builder->select(implode(', ', $column));
     }
 
     protected function find($id)
     {
-        return $this->builder->select('*')->where('id', '=', $id)->send();
+        return $this->builder->select('*')->where('id', '=', $id);
     }
 
     protected function update($data)
     {
-        return $this->builder->update($data)->send();
+        return $this->builder->update($data);
     }
 
     public static function delete($id)
