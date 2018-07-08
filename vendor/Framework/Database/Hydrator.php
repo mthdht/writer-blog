@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: mthdht
- * Date: 06/07/18
- * Time: 16:26
+ * @author mthdht
+ * @license MIT
  */
 
 namespace Framework\Database;
@@ -12,7 +10,10 @@ namespace Framework\Database;
 trait Hydrator
 {
 
-    public function fill($attributes) {
-
+    public function fill(array $attributes)
+    {
+        foreach ($attributes as $key => $value) {
+            $this->setAttribute($key, $value);
+        }
     }
 }
