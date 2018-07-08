@@ -29,9 +29,9 @@ class Manager
         return $this->builder->select(implode(', ', $column))->send();
     }
 
-    public static function find($id)
+    private function find($id)
     {
-
+        return $this->builder->select('*')->where('id', '=', $id)->send();
     }
 
     public static function update($id, $data)
