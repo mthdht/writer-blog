@@ -361,7 +361,8 @@ class QueryBuilder
     public function send()
     {
         $query = $this->getQuery();
-        return $this->db->prepare($query, $this->attributes);
+        $classname = 'App\\Models\\' . ucfirst(substr($this->table, 0, -1));
+        return $this->db->prepare($query, $this->attributes, $classname);
     }
 
     public static function __callStatic($name, $arguments)
