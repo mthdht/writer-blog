@@ -17,5 +17,7 @@
     </ul>
 </nav>
 <?= $content; ?>
+<br>
+<?= $contentBis; ?>
 </body>
 </html>
