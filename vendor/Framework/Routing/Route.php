@@ -24,7 +24,6 @@ class Route
     public function match($url) {
         // replace {param} by regex on path
         $path = preg_replace_callback('#\{([\w]+)\}#', [$this, 'parameterRegex'], $this->path);
-        var_dump($path);
         // check if regex match the url
         if (preg_match('#^'.$path.'$#', $url, $matches)) {
             array_shift($matches);
