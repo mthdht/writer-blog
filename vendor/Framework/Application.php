@@ -6,17 +6,14 @@
 
 namespace Framework;
 
+use Framework\Database\QueryBuilder;
 use Framework\Routing\Router;
+use Framework\Database\Manager;
 
 class Application
 {
     public function run()
     {
-        //Router::get('/', 'homeController@index');
-        Router::get('/test/{id}/test2/{id2}', 'TestController@show')->where('id', '[a-z]+');
-        // lance le router
-        $response = Router::run();
-        echo ($response);
 
     }
 }
