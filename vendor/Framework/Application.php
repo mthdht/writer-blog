@@ -16,10 +16,15 @@ class Application
     public function run()
     {
         $view = View::make('test.index', [
-            'title' => 'mon titre de blog',
-            'content' => 'contenu de blog'
+            'title' => 'test complet',
+            'content' => 'avec layout et section'
         ]);
-
         $view->render();
+
+        /*$view2 = View::make('test.wihoutExtend', [
+            'title' => 'test sans extend',
+            'content' => 'sans extend juste la vue'
+        ]);*/
+
     }
 }

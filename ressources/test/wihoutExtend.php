@@ -5,23 +5,14 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>test sans extend</title>
 </head>
 <body>
 
-<nav>
-    <ul>
-        <li>test</li>
-        <li>de</li>
-        <li>layout</li>
-    </ul>
-</nav>
-<section class="main">
-    @generate('content')
-</section>
-
-<section class="second">
-    @generate('contentBis')
-</section>
+<div>voici un test de vue sans extend tag</div>
+<div>
+    <?= $title; ?>
+    <?= $content; ?>
+</div>
 </body>
 </html>

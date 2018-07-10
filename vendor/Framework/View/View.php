@@ -9,76 +9,36 @@ namespace Framework\View;
 
 class View
 {
-    protected $contentFile;
-    protected $basePath;
-    protected $data;
-    protected $content;
-    protected $storageFilePath;
+    public $contentFile;
+    public $basePath;
+    public $data;
+    public $name;
 
-    public function __construct()
+    public function __construct($content, $data)
     {
         $this->basePath = ROOT . '/ressources/';
-    }
-
-    protected function make($content, $data = [])
-    {
         $this->contentFile = $this->basePath . preg_replace('#\.#', '/', $content) . '.php';
         $this->data = $data;
-        $this->content = $content;
+        $this->name = $content;
+    }
+
+    protected function make()
+    {
+        $builder = new Builder($this);
+        $builder->build();
+
         return $this;
     }
 
     public function render()
     {
-        foreach ($this->data as $key => $value) {
-            ${$key} = $value;
-        }
-
-        $this->build();
-        require ROOT.'/storage/'.$this->content.'.php';
-    }
-
-    public function parseContent()
-    {
-
-    }
-
-    public function parseExtend($file)
-    {
-        $file = preg_replace_callback('#@extend\(\'(.+)\'\)(.*)#s', function ($matches) {
-            $layoutPath = $this->basePath . preg_replace('#\.#', '/', $matches[1]) . '.php';
-            return $matches[2] . "<?php require '$layoutPath'; ";
-        }, $file);
-
-        return $file;
-    }
-
-    public function parseSection()
-    {
-        $content = file_get_contents($this->contentFile);
-
-        $content = preg_replace_callback('#@section\(\'(.+)\'\)(.*)@endsection#sU', function($matches) {
-            return "<?php ob_start(); ?>" . $matches[2] . "<?php $" . $matches[1] . " = ob_get_clean(); ?>";
-        }, $content);
-
-        return $content;
-    }
-
-    public function build()
-    {
-        $content = $this->parseSection();
-        $content = $this->parseExtend($content);
-        $content = preg_replace('/^\h*\v+/m', '', $content);
-
-        if (!file_exists(ROOT . '/storage/' . $this->content . '.php')) {
-            $this->storageFilePath = ROOT . '/storage/' . $this->content . '.php';
-            file_put_contents($this->storageFilePath, $content);
-        }
+        extract($this->data);
+        require ROOT.'/storage/'.$this->name.'.php';
     }
 
     public static function __callStatic($name, $arguments)
     {
-        $view = new View();
-        return call_user_func_array([$view, $name], $arguments);
+        $view = new View(...$arguments);
+        return call_user_func([$view, $name]);
     }
 }
