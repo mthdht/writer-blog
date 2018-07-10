@@ -1,18 +1,17 @@
 @extend('layouts.app')
 
-@section('content')
+@block('content')
+<div>
+    contenu de <b>content</b> dans dossier <b>test</b> <br>
+    variable title: <?= $title ?> <br>
+    variable content: <?= $content; ?>
+</div>
+@endblock
 
-voici le blog <br>
-
-titre : <?= $title ?>
-
-@endsection
-
-
-@section('contentBis')
-
-Voici le contenu bis
-
-contenu : <?= $content; ?>
-
-@endsection
+@block('contentBis')
+<div>
+    contenu de <b>contentBis</b> dans dossier <b>test</b> <br>
+    variable title: <?= $title; ?> <br>
+    variable content: <?= $content; ?>
+</div>
+@endblock
