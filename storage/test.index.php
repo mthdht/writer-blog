@@ -8,7 +8,6 @@
     <title>Document</title>
 </head>
 <body>
-
 <nav>
     <ul>
         <li>test</li>
@@ -17,16 +16,13 @@
     </ul>
 </nav>
 <section class="main">
-    
 <div>
     contenu de <b>content</b> dans dossier <b>test</b> <br>
     variable title: <?= $title ?> <br>
     variable content: <?= $content; ?>
 </div>
 </section>
-
 <section class="second">
-    
 <div>
     contenu de <b>contentBis</b> dans dossier <b>test</b> <br>
     variable title: <?= $title; ?> <br>

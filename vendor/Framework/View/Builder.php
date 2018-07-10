@@ -38,6 +38,7 @@ class Builder
             preg_match('#@block\(\'' . $matches[1] .'\'\)(.+)@endblock#sU', file_get_contents($this->view->contentFile), $matche);
             return $matche[1];
         }, $this->page);
+        $this->page = preg_replace('/^\h*\v+/m', '', $this->page);
 
     }
 
