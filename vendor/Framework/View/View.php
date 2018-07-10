@@ -33,7 +33,9 @@ class View
     public function render()
     {
         extract($this->data);
+        ob_start();
         require ROOT.'/storage/'.$this->name.'.php';
+        return ob_get_clean();
     }
 
     public static function __callStatic($name, $arguments)
