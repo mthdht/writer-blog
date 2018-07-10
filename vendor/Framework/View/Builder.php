@@ -39,13 +39,18 @@ class Builder
             return $matche[1];
         }, $this->page);
         $this->page = preg_replace('/^\h*\v+/m', '', $this->page);
+    }
 
+    public function parseContent()
+    {
+        $this->page = preg_replace('#\{\{\s(.+)\s\}\}#', '<?= htmlspecialchars($1); ?>', $this->page);
     }
 
     public function build()
     {
         if ($this->hasExtend()) {
             $this->parseBlock();
+            $this->parseContent();
         }
         $storageFilePath = ROOT . '/storage/' . $this->view->name . '.php';
         return file_put_contents($storageFilePath, $this->page);

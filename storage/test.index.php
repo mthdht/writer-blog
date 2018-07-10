@@ -25,8 +25,8 @@
 <section class="second">
 <div>
     contenu de <b>contentBis</b> dans dossier <b>test</b> <br>
-    variable title: <?= $title; ?> <br>
-    variable content: <?= $content; ?>
+    variable title: <?= htmlspecialchars($title); ?> <br>
+    variable content: <?= htmlspecialchars($content); ?>
 </div>
 </section>
 </body>

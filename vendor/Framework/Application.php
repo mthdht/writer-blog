@@ -19,7 +19,8 @@ class Application
             'title' => 'test complet',
             'content' => 'avec layout et section'
         ]);
-        $view->render();
+        $page = $view->render();
+        echo $page;
 
         /*$view2 = View::make('test.wihoutExtend', [
             'title' => 'test sans extend',
