@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: mthdht
- * Date: 11/07/18
- * Time: 22:12
+ * @author mthdht
+ * @license MIT
  */
 
 namespace Framework\Http;
