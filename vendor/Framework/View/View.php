@@ -22,25 +22,22 @@ class View
         $this->name = $content;
     }
 
-    protected function make()
+    public static function make($viewFile, $data = [])
     {
-        $builder = new Builder($this);
+        $instance = new static($viewFile, $data);
+        $builder = new Builder($instance);
         $builder->build();
 
-        return $this;
+        return $instance;
     }
 
     public function render()
     {
-        extract($this->data);
+        if (isset($this->data)) {
+            extract($this->data);
+        }
         ob_start();
         require ROOT.'/storage/'.$this->name.'.php';
         return ob_get_clean();
-    }
-
-    public static function __callStatic($name, $arguments)
-    {
-        $view = new View(...$arguments);
-        return call_user_func([$view, $name]);
     }
 }
