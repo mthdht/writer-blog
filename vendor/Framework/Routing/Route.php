@@ -7,6 +7,8 @@
 namespace Framework\Routing;
 
 
+use Framework\Http\Request;
+
 class Route
 {
 
@@ -33,7 +35,7 @@ class Route
         return false;
     }
 
-    public function handle()
+    public function handle(Request $request)
     {
         // check if handler is a string
         if (is_string($this->handler)) {
@@ -41,10 +43,15 @@ class Route
             if (preg_match('#[A-Za-z]+Controller@[a-z]+#', $this->handler)) {
                 // call good controller and his associate method
                 $handlerParameter = explode('@', $this->handler);
-                $controller = 'App\\Controllers\\' . $handlerParameter[0];
+                $controller = 'App\\Controllers\\' . ucfirst($handlerParameter[0]);
                 $controller = new $controller();
                 $method = $handlerParameter[1];
+                if ($request->isMethod('post')) {
+                    $param = array_merge([$request], $this->matches);
+                    return call_user_func_array([$controller, $method], $param);
+                }
                 return call_user_func_array([$controller, $method], $this->matches);
+
             } else {
                 throw new \Exception('Controller handler not valid');
             }

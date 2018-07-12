@@ -7,6 +7,8 @@
 namespace Framework\Routing;
 
 
+use Framework\Http\Request;
+
 class Router
 {
 
@@ -26,15 +28,15 @@ class Router
         return $route;
     }
 
-    public static function run()
+    public static function run(Request $request)
     {
-        if (!isset(self::$routes[$_SERVER['REQUEST_METHOD']])) {
+        if (!isset(self::$routes[$request->method()])) {
             throw new \Exception('Request method not found!');
         }
 
-        foreach (self::$routes[$_SERVER['REQUEST_METHOD']] as $route) {
-            if ($route->match($_SERVER['REQUEST_URI'])) {
-                return $route->handle();
+        foreach (self::$routes[$request->method()] as $route) {
+            if ($route->match($request->path())) {
+                return $route->handle($request);
             }
         }
 
