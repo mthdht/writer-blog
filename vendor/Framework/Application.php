@@ -6,17 +6,14 @@
 
 namespace Framework;
 
+use Framework\Config\Config;
 use Framework\Http\Response;
-use Framework\View\View;
+use Framework\Routing\Router;
 use Framework\Http\Request;
 
 class Application
 {
     public $request;
-
-    public $response;
-
-    public $config;
 
     public function __construct()
     {
@@ -25,8 +22,11 @@ class Application
 
     public function run()
     {
-        $response = Response::create(View::make('test.index')->render())
-            ->header('test');
+        require Config::get('routes');
+
+        Router::get('/{id}', 'testController@index');
+
+        $response = Response::create(Router::run($this->request));
         $response->send();
 
     }
