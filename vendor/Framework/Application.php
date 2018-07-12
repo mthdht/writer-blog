@@ -6,26 +6,28 @@
 
 namespace Framework;
 
-use Framework\Database\QueryBuilder;
-use Framework\Routing\Router;
-use Framework\Database\Manager;
+use Framework\Http\Response;
 use Framework\View\View;
+use Framework\Http\Request;
 
 class Application
 {
+    public $request;
+
+    public $response;
+
+    public $config;
+
+    public function __construct()
+    {
+        $this->request = new Request();
+    }
+
     public function run()
     {
-        $view = View::make('test.index', [
-            'title' => 'test complet',
-            'content' => 'avec layout et section'
-        ]);
-        $page = $view->render();
-        echo $page;
-
-        /*$view2 = View::make('test.wihoutExtend', [
-            'title' => 'test sans extend',
-            'content' => 'sans extend juste la vue'
-        ]);*/
+        $response = Response::create(View::make('test.index')->render())
+            ->header('test');
+        $response->send();
 
     }
 }

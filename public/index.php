@@ -1,6 +1,7 @@
 <?php
 
 define('ROOT', dirname(__DIR__));
+session_start();
 
 require '../vendor/autoload.php';
 
